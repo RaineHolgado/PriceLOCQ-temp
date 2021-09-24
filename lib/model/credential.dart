@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class Credential {
   String? mobile;
   String? password;
@@ -25,27 +23,16 @@ class Credential {
     };
   }
 
-  factory Credential.fromMap(Map<String, dynamic> map) {
-    return Credential(
-      mobile: map['mobile'],
-      password: map['password'],
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Credential.fromJson(String source) => Credential.fromMap(json.decode(source));
-
   @override
   String toString() => 'Credential(mobile: $mobile, password: $password)';
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is Credential &&
-      other.mobile == mobile &&
-      other.password == password;
+        other.mobile == mobile &&
+        other.password == password;
   }
 
   @override

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pricelocq_temp/api/pricelocq_repo.dart';
 import 'package:pricelocq_temp/common/custom_button.dart';
 import 'package:pricelocq_temp/model/credential.dart';
+import 'package:pricelocq_temp/repository/pricelocq_repo.dart';
 
 class LoginView extends ConsumerWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -31,7 +31,15 @@ class LoginView extends ConsumerWidget {
               CustomTextField(),
               const Spacer(),
               CustomButton(
-                onTap: () {},
+                onTap: () async {
+                  Credential _credential = Credential();
+                  _credential.mobile = "09021234567";
+                  _credential.password = "123456";
+
+                  // ref.read(priceLocqRepo).login(credential: _credential);
+                  var a = await ref.read(priceLocqRepo).fetchAllStations();
+                  print("Length: $a");
+                },
                 label: "Continue",
               ),
             ],
