@@ -30,7 +30,7 @@ class PriceLOCQTemp extends StatelessWidget {
         primaryColor: primaryAppColor,
         platform: Theme.of(context).platform,
       ),
-      home: const LoginView(),
+      home: LoginView(),
     );
   }
 }

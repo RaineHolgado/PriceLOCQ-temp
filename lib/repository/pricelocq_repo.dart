@@ -7,8 +7,8 @@ import 'package:pricelocq_temp/model/station.dart';
 final priceLocqRepo = Provider<PriceLocqApi>((ref) => IPriceLocqApi());
 
 abstract class PriceLocqApi {
-  Future<void> fetchAccessToken({required Credential credential});
-  Future<List<Station>> fetchAllStations();
+  Future<String> fetchAccessToken({required Credential credential});
+  Future<List<Station>> fetchAllStations({required String token});
 }
 
 class IPriceLocqApi implements PriceLocqApi {
@@ -30,7 +30,7 @@ class IPriceLocqApi implements PriceLocqApi {
         ),
         data: credential.toMap(),
       );
-      debugPrint("Response: ${_response.data['data']}");
+      // debugPrint("Response: ${_response.data['data']}");
 
       // Since the statucCode is always 200 error or not, Im using the response body 'status'
       if (_response.data['status'] == 'success') {
@@ -46,10 +46,10 @@ class IPriceLocqApi implements PriceLocqApi {
   }
 
   @override
-  Future<List<Station>> fetchAllStations() async {
+  Future<List<Station>> fetchAllStations({required String token}) async {
     try {
-      _dio.options.headers['Authorization'] =
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzIiwidXNlcklkIjoxNDM0NywibW9iaWxlQ29uZmlybWVkIjp0cnVlLCJpYXQiOjE2MzI0NzA2ODUsImV4cCI6MTYzMjQ3Nzg4NX0.wvdvW-jI2l2jsTRRRALW5cEkpay9xPQjnf5k2Nmu88M';
+      _dio.options.headers['Authorization'] = token;
+      // 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzIiwidXNlcklkIjoxNDM0NywibW9iaWxlQ29uZmlybWVkIjp0cnVlLCJpYXQiOjE2MzI0NzA2ODUsImV4cCI6MTYzMjQ3Nzg4NX0.wvdvW-jI2l2jsTRRRALW5cEkpay9xPQjnf5k2Nmu88M';
       Response _response = await _dio.get(
         allStationsUrl,
         options: Options(
@@ -60,8 +60,7 @@ class IPriceLocqApi implements PriceLocqApi {
       if (_response.data['status'] == 'success') {
         if (_response.data['data'].length != 0) {
           // There's some kind of runtime error here that is needs to specify the type, so i did it manually not good practice hihihi :)
-          List<Map<String, dynamic>> _data =
-              _response.data['data'] as List<Map<String, dynamic>>;
+          List<dynamic> _data = _response.data['data'] as List<dynamic>;
 
           return _data.map((result) => Station.fromMap(result)).toList();
         } else {
