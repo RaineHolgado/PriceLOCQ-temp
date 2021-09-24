@@ -1,8 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pricelocq_temp/app/router.gr.dart';
 import 'package:pricelocq_temp/helpers/constants.dart';
-import 'package:pricelocq_temp/screens/login/login_view.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -22,7 +23,9 @@ class PriceLOCQTemp extends StatelessWidget {
   const PriceLOCQTemp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    final _appRouter = AppRouter();
+
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'PriceLOCQ-temp',
       theme: ThemeData(
@@ -30,7 +33,11 @@ class PriceLOCQTemp extends StatelessWidget {
         primaryColor: primaryAppColor,
         platform: Theme.of(context).platform,
       ),
-      home: LoginView(),
+      routerDelegate: AutoRouterDelegate(
+        _appRouter,
+        navigatorObservers: () => [AutoRouteObserver()],
+      ),
+      routeInformationParser: _appRouter.defaultRouteParser(),
     );
   }
 }

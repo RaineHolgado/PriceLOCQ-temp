@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pricelocq_temp/model/credential.dart';
+import 'package:pricelocq_temp/model/station.dart';
 import 'package:pricelocq_temp/repository/pricelocq_repo.dart';
 
 final priceLocqServiceProvider =
@@ -23,8 +24,16 @@ class PriceLocqServiceProvider {
           .read(priceLocqRepo)
           .fetchAccessToken(credential: _credential);
       debugPrint("AccessToken: $_accessToken");
+
+      await getStationList();
     } catch (e) {
       throw "$e";
     }
+  }
+
+  Future<void> getStationList() async {
+    List<Station> _stations =
+        await ref.read(priceLocqRepo).fetchAllStations(token: accessToken!);
+    debugPrint("Stations length: ${_stations.length}");
   }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pricelocq_temp/common/custom_button.dart';
 import 'package:pricelocq_temp/common/custom_textField.dart';
-import 'package:pricelocq_temp/screens/login/login_pcontroller.dart';
+import 'package:pricelocq_temp/screens/login/login_statecontroller.dart';
 
 class LoginView extends StatelessWidget {
   LoginView({Key? key}) : super(key: key);
@@ -66,6 +66,7 @@ class LoginView extends StatelessWidget {
                           if (_mobileNumController.text.isNotEmpty &&
                               _passwordController.text.isNotEmpty) {
                             ref.read(loginStateController.notifier).login(
+                                  context: context,
                                   mobile: _mobileNumController.text,
                                   password: _passwordController.text,
                                 );
@@ -73,12 +74,13 @@ class LoginView extends StatelessWidget {
                         },
                         label: "Continue",
                       ),
-                      const SizedBox(height: 10),
-                      if (state == Status.error)
+                      if (state == Status.error) ...[
+                        const SizedBox(height: 10),
                         Text(
                           "${ref.read(loginStateController.notifier).errorMessage}",
                           style: const TextStyle(color: Colors.red),
                         ),
+                      ]
                     ],
                   );
                 },
@@ -90,4 +92,3 @@ class LoginView extends StatelessWidget {
     );
   }
 }
-

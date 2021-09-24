@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pricelocq_temp/services/pricelocq_services.dart';
 
@@ -20,6 +21,7 @@ class LoginStateController extends StateNotifier<Status> {
   String? get errorMessage => _errorMessage;
 
   Future<void> login({
+    required BuildContext context,
     required String mobile,
     required String password,
   }) async {

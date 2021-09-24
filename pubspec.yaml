@@ -13,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^1.0.0-dev.7
-  # google_maps_flutter: ^2.0.10
+  google_maps_flutter: ^2.0.10
   http: ^0.13.3
 
 dev_dependencies:
