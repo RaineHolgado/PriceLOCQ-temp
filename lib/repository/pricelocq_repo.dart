@@ -13,11 +13,10 @@ abstract class PriceLocqApi {
 class IPriceLocqApi implements PriceLocqApi {
   static final Dio _dio = Dio();
 
-  // Store this constant value in secure place that wont accidentally changed
-  static const String loginSessionUrl =
-      'https://stable-api.pricelocq.com/mobile/v2/sessions';
-  static const String allStationsUrl =
-      'https://stable-api.pricelocq.com/mobile/stations?all';
+  // Store this constant value in secure place that wont be accidentally changed
+  static const String baseUrl = 'https://stable-api.pricelocq.com';
+  static const String loginSessionUrl = '$baseUrl/mobile/v2/sessions';
+  static const String allStationsUrl = '$baseUrl/mobile/stations?all';
 
   @override
   Future<String> fetchAccessToken({required Credential credential}) async {
@@ -29,7 +28,6 @@ class IPriceLocqApi implements PriceLocqApi {
         ),
         data: credential.toMap(),
       );
-      // debugPrint("Response: ${_response.data['data']}");
 
       // Since the statucCode is always 200 error or not, Im using the response body 'status'
       if (_response.data['status'] == 'success') {
@@ -48,7 +46,7 @@ class IPriceLocqApi implements PriceLocqApi {
   Future<List<Station>> fetchAllStations({required String token}) async {
     try {
       _dio.options.headers['Authorization'] = token;
-      // 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiYWNjZXNzIiwidXNlcklkIjoxNDM0NywibW9iaWxlQ29uZmlybWVkIjp0cnVlLCJpYXQiOjE2MzI0NzA2ODUsImV4cCI6MTYzMjQ3Nzg4NX0.wvdvW-jI2l2jsTRRRALW5cEkpay9xPQjnf5k2Nmu88M';
+
       Response _response = await _dio.get(
         allStationsUrl,
         options: Options(

@@ -1,14 +1,17 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:pricelocq_temp/app/router.gr.dart';
 import 'package:pricelocq_temp/helpers/constants.dart';
+import 'package:pricelocq_temp/screens/landing/landing_view.dart';
+import 'package:pricelocq_temp/screens/search_station/search_station_view.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      statusBarColor: Color(0xFF000000),
+      // statusBarColor: Color(0xFF000000),
+      statusBarColor: Color(0xFF743BBC),
       systemNavigationBarColor: Color(0xFF743BBC),
     ),
   );
@@ -25,7 +28,22 @@ class PriceLOCQTemp extends StatelessWidget {
   Widget build(BuildContext context) {
     final _appRouter = AppRouter();
 
-    return MaterialApp.router(
+    // return MaterialApp.router(
+    //   debugShowCheckedModeBanner: false,
+    //   title: 'PriceLOCQ-temp',
+    //   theme: ThemeData(
+    //     scaffoldBackgroundColor: Colors.white,
+    //     primaryColor: primaryAppColor,
+    //     platform: Theme.of(context).platform,
+    //   ),
+    //   routerDelegate: AutoRouterDelegate(
+    //     _appRouter,
+    //     navigatorObservers: () => [AutoRouteObserver()],
+    //   ),
+    //   routeInformationParser: _appRouter.defaultRouteParser(),
+    // );
+
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'PriceLOCQ-temp',
       theme: ThemeData(
@@ -33,11 +51,7 @@ class PriceLOCQTemp extends StatelessWidget {
         primaryColor: primaryAppColor,
         platform: Theme.of(context).platform,
       ),
-      routerDelegate: AutoRouterDelegate(
-        _appRouter,
-        navigatorObservers: () => [AutoRouteObserver()],
-      ),
-      routeInformationParser: _appRouter.defaultRouteParser(),
+      home: LandingView(),
     );
   }
 }

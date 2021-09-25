@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pricelocq_temp/services/pricelocq_services.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:pricelocq_temp/app/router.gr.dart';
 
 enum Status {
   none,
@@ -10,7 +12,7 @@ enum Status {
 }
 
 final loginStateController =
-    StateNotifierProvider<LoginStateController, Status>(
+    StateNotifierProvider.autoDispose<LoginStateController, Status>(
         (ref) => LoginStateController(ref));
 
 class LoginStateController extends StateNotifier<Status> {
@@ -31,6 +33,7 @@ class LoginStateController extends StateNotifier<Status> {
             mobileNum: mobile,
             password: password,
           );
+      context.router.push(LandingRoute());
       state = Status.done;
     } catch (e) {
       state = Status.error;
