@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:pricelocq_temp/screens/landing/landing_stateController.dart';
+import 'package:pricelocq_temp/screens/landing/landing_view.dart';
+import 'package:pricelocq_temp/screens/search_station/search_controller.dart';
+import 'package:auto_route/auto_route.dart';
 
-class SearchStationView extends StatelessWidget {
+class SearchStationView extends ConsumerWidget {
   const SearchStationView({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // final size = MediaQuery.of(context).size.width;
+    // var searchP = ref.watch(searchProvider);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -19,7 +26,11 @@ class SearchStationView extends StatelessWidget {
           actions: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Icon(Icons.close),
+              child: IconButton(
+                  onPressed: () {
+                    context.router.pop();
+                  },
+                  icon: Icon(Icons.close)),
             ),
           ],
           automaticallyImplyLeading: false,
@@ -49,6 +60,10 @@ class SearchStationView extends StatelessWidget {
                           vertical: 18, horizontal: 20),
                       border: InputBorder.none,
                     ),
+                    onChanged: (String search) {
+                      // searchP.search(search);
+                      ref.read(searchValue).state = search;
+                    },
                   ),
                 ),
                 SizedBox(height: 40),
@@ -57,33 +72,47 @@ class SearchStationView extends StatelessWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            for (var i = 0; i < 10; i++)
-              ListTile(
-                onTap: () {},
-                title: Text(
-                  "SEAOIL INDEX $i - ADDRESS",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                subtitle: Text("kilometer away from you"),
-                contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                // I dont know the functionality of the radio button
-                // if the user can select multiple station
-                // i just added a plain radio button
-                trailing: Radio(
-                  value: 1,
-                  groupValue: 0,
-                  onChanged: (val) {},
-                ),
-              )
-          ],
-        ),
-      ),
+      body: Consumer(builder: (context, ref, _) {
+        var streamStation = ref.watch(streamProvider);
+        return streamStation.when(data: (data) {
+          return StationListTile(
+            onTap: (CameraPosition cameraPosition) {
+              // newGoogleMapController!
+              //     .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+            },
+            currentLoc:
+                ref.read(landingProvider.notifier).currentLocation.target,
+            stations: data,
+          );
+        }, loading: () {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }, error: (e, s) {
+          return Center(
+            child: Text("$e"),
+          );
+        });
+      }
+          // body: Container(
+          //   child: StreamBuilder<List<Station>>(
+          //     initialData: [],
+          //     stream: searchP.getStations(),
+          //     builder: (context, data) {
+          //       print("################################################");
+          //       print(data.data);
+          //       return StationListTile(
+          //         onTap: (CameraPosition cameraPosition) {
+          //           // newGoogleMapController!
+          //           //     .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+          //         },
+          //         currentLoc:
+          //             ref.read(landingProvider.notifier).currentLocation.target,
+          //         stations: data.data!,
+          //       );
+          //     },
+          //   ),
+          ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Station {
   int? id;
@@ -38,19 +39,27 @@ class Station {
     this.updatedAt,
   });
 
-  double distanceInMeters(
-    double startLatitude,
-    double startLongitude,
+  double get stationLatitude => double.parse(this.lat!);
+  double get stationLongitude => double.parse(this.lng!);
+
+  String distanceValue(
+    LatLng latLng,
   ) {
-    double stationLatitude = double.parse(this.lat!);
-    double stationLongitude = double.parse(this.lng!);
-    return Geolocator.distanceBetween(
-      startLatitude,
-      startLongitude,
+    double distanceDiff = Geolocator.distanceBetween(
+      latLng.latitude,
+      latLng.longitude,
       stationLatitude,
       stationLongitude,
     );
+
+    double distanceInKiloMeters = distanceDiff / 1000;
+    double roundDistanceInKM =
+        double.parse((distanceInKiloMeters).toStringAsFixed(3));
+    return roundDistanceInKM.toString();
   }
+
+  CameraPosition get stationPosition => CameraPosition(
+      target: LatLng(this.stationLatitude, this.stationLongitude), zoom: 16.47);
 
   Map<String, dynamic> toMap() {
     return {

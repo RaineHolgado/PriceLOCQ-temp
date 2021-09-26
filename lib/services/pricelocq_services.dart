@@ -35,12 +35,15 @@ class PriceLocqServiceProvider {
     }
   }
 
+  List<Station> sortedStation(LatLng _latLng) {
+    stations.sort(
+      (a, b) => a.distanceValue(_latLng).compareTo(b.distanceValue(_latLng)),
+    );
+    return stations;
+  }
+
   Future<void> getStationList() async {
     _stations =
         await ref.read(priceLocqRepo).fetchAllStations(token: accessToken!);
-    // debugPrint("Stations length: ${_stations.length}");
-    // _stations.forEach((element) {
-    //   print(element.name);
-    // });
   }
 }

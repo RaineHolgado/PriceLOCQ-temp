@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pricelocq_temp/screens/login/login_statecontroller.dart';
 
 final landingProvider = StateNotifierProvider<LandingProvider, Status>(
@@ -12,47 +13,32 @@ class LandingProvider extends StateNotifier<Status> {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
+  late CameraPosition _currentLocation;
+  CameraPosition get currentLocation => _currentLocation;
+
   Future<void> initLocation() async {
-    print("Called");
-    bool serviceEnabled;
-    LocationPermission permission;
+    try {
+      state = Status.loading;
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) throw 'Location services are disabled.';
 
-    state = Status.loading;
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      _errorMessage = 'Location services are disabled.';
-      state = Status.error;
-    }
+      LocationPermission permission = await Geolocator.checkPermission();
 
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        _errorMessage = 'Location permissions are denied';
-        state = Status.error;
-      } else {
-        // Position position = await Geolocator.getCurrentPosition(
-        //     desiredAccuracy: LocationAccuracy.high);
-        state = Status.done;
-        // print(
-        //     "/////////////////////////////////////////////////////// $position");
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied)
+          throw 'Location permissions are denied';
       }
+      Position _position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      LatLng latLngPosition = LatLng(_position.latitude, _position.longitude);
+      _currentLocation = CameraPosition(target: latLngPosition, zoom: 14.4746);
+
+      state = Status.done;
+    } catch (e) {
+      _errorMessage = '$e';
+      state = Status.error;
     }
   }
 }
-
-final testProvider = FutureProvider<Position>((ref) async {
-  bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // _errorMessage = 'Location permissions are denied';
-      }
-    }
-  }
-
-  return await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high);
-});

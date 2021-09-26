@@ -16,6 +16,7 @@ dependencies:
   geolocator: ^7.6.2
   google_maps_flutter: ^2.0.10
   http: ^0.13.3
+  rxdart: ^0.27.2
 
 dev_dependencies:
   auto_route_generator: ^2.4.0
